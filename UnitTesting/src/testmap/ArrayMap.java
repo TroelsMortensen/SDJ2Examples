@@ -54,16 +54,22 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
             throw new IllegalArgumentException("Null not allowed");
         if (!containsKey(key))
             return false;
-        KeyValue keyValue = Arrays.stream(entities).filter(kv -> kv.key.equals(key)).findFirst().get();
-        keyValue.value = value;
-        return true;
+        for (KeyValue entity : entities) {
+            if(entity.key.equals(key)) {
+                entity.value = value;
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean containsKey(K key) {
         // -- null key?
-        Optional<KeyValue> first = Arrays.stream(entities).filter(kv -> key.equals(kv.key)).findFirst();
-        return first.isPresent();
+        for (KeyValue entity : entities) {
+            if(entity.key.equals(key)) return true;
+        }
+        return false;
     }
 
     @Override
