@@ -70,8 +70,10 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
     public boolean containsValue(V value) {
         if(value == null)
             return false;
-        Optional<KeyValue> first = Arrays.stream(entities).filter(kv -> kv.value.equals(value)).findFirst();
-        return first.isPresent();
+        for (KeyValue entity : entities) {
+            if(entity.value.equals(value)) return true;
+        }
+        return false;
     }
 
     @Override
