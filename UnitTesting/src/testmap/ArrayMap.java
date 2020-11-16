@@ -11,7 +11,7 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
     private int index = 0;
 
     public ArrayMap() {
-        entities = (KeyValue[]) new Object[7];
+        entities = (KeyValue[]) java.lang.reflect.Array.newInstance(KeyValue.class, 7);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
     }
 
     private void expand() {
-        KeyValue[] tmp = (KeyValue[]) new Object[entities.length * 2];
+        KeyValue[] tmp = (KeyValue[]) java.lang.reflect.Array.newInstance(KeyValue.class, entities.length*2);
         System.arraycopy(entities, 0, tmp, 0, entities.length);
         entities = tmp;
     }
@@ -55,7 +55,7 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
         if (!containsKey(key))
             return false;
         for (KeyValue entity : entities) {
-            if(entity.key.equals(key)) {
+            if (entity.key.equals(key)) {
                 entity.value = value;
                 return true;
             }
@@ -67,38 +67,38 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
     public boolean containsKey(K key) {
         // -- null key?
         for (KeyValue entity : entities) {
-            if(entity.key.equals(key)) return true;
+            if (entity != null && entity.key.equals(key)) return true;
         }
         return false;
     }
 
     @Override
     public boolean containsValue(V value) {
-        if(value == null)
+        if (value == null)
             return false;
         for (KeyValue entity : entities) {
-            if(entity.value.equals(value)) return true;
+            if (entity.value.equals(value)) return true;
         }
         return false;
     }
 
     @Override
     public V remove(K key) {
-        if(key == null)
+        if (key == null)
             return null;
-        if(!containsKey(key))
+        if (!containsKey(key))
             return null;
         int idx = -1;
         for (int i = 0; i < entities.length; i++) {
-            if(entities[i].key.equals(key)){
+            if (entities[i].key.equals(key)) {
                 idx = i;
                 break;
             }
         }
         V valueToRemove = entities[idx].value;
         entities[idx] = null;
-        for (int i = idx; i < entities.length-1; i++) {
-            entities[i] = entities[i+1];
+        for (int i = idx; i < entities.length - 1; i++) {
+            entities[i] = entities[i + 1];
         }
         index--;
         return valueToRemove;
@@ -107,7 +107,7 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
     @Override
     public boolean remove(K key, V value) {
         V v = get(key);
-        if(v.equals(value)) {
+        if (v.equals(value)) {
             V remove = remove(key);
             return remove != null;
         }
@@ -117,7 +117,7 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
     @Override
     public int size() {
         // --
-        return entities.length;
+        return index;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class ArrayMap<K, V> implements MyMap<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return index==0;
+        return index == 0;
     }
 
     private class KeyValue {
